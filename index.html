@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Labor Market Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css"> 
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+  <style>
+    /* CSS for the Modal - Add this to your styles.css */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+      backdrop-filter: blur(4px);
+      padding-top: 50px;
+    }
+
+    .modal-content {
+      background-color: #1f2937;
+      color: white;
+      margin: 5% auto; 
+      padding: 30px;
+      border: 1px solid #475569;
+      width: 80%; 
+      max-width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .modal-content label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .modal-content input[type="text"],
+    .modal-content input[type="number"],
+    .modal-content select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #475569;
+      border-radius: 6px;
+      box-sizing: border-box;
+      background-color: #374151;
+      color: white;
+    }
+
+    .modal-content .btn {
+      margin-top: 20px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+  <div class="orb three"></div>
+  <div class="orb four"></div>
+
+  <div id="appContainer">
+    <nav class="nav">
+      <div class="wrap">
+        <div class="brand"><span class="dot"></span> Labor Market Analysis</div>
+        <div class="links">
+          <a href="#" onclick="showPage('main'); return false;">Home</a>
+          <a href="#quiz">Questionnaire</a>
+          <a href="#learn">Labor Analysis</a>
+          <a href="#results">Results</a>
+        </div>
+        <div class="right">
+          <button class="pill team-pill" onclick="showPage('team');">
+            <i class="fa-solid fa-star"></i> Meet Our Team
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section id="home" class="reveal">
+        <div class="hero-container">
+          <div class="hero-bg"></div>
+          <div class="hero-grid">
+            <h1>Labor Market Knowledge Assessment</h1>
+            <p>Evaluate your understanding of labor categories, protection laws, and market dynamics</p>
+            <button class="glow-on-hover" type="button" onclick="scrollToQuiz()">Start Assessment</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="categories" class="reveal">
+        <h2 style="text-align:center; font-weight:700;">Understanding Labor Market Categories</h2>
+        <p class="muted" style="text-align:center; margin-top:4px;">Explore different types of labor across various sectors and their characteristics</p>
+        <div class="grid grid-4" style="margin-top: 24px;">
+          <div class="icon-card">
+            <div class="icon-svg blue">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.441 0 4.679-.908 6.368-2.434C18.423 16.51 18 14.545 18 12c0-2.056-.513-3.99-1.41-5.698M12 3c-2.441 0-4.679.908-6.368 2.434C5.577 7.49 6 9.455 6 12c0 2.056.513 3.99 1.41 5.698M12 3a9.004 9.004 0 00-8.716 6.747M12 3a9.004 9.004 0 018.716 6.747"/></svg>
+            </div>
+            <h4>Skilled Labor</h4>
+            <p>Workers with specialized training, education, and experience</p>
+            <div class="badges"><span class="badge">Agriculture</span><span class="badge">Industry</span><span class="badge">Construction</span></div>
+          </div>
+          <div class="icon-card">
+            <div class="icon-svg green">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+            </div>
+            <h4>Unskilled Labor</h4>
+            <p>Workers performing tasks requiring minimal training</p>
+            <div class="badges"><span class="badge">Agriculture</span><span class="badge">Industry</span><span class="badge">Construction</span></div>
+          </div>
+          <div class="icon-card">
+            <div class="icon-svg red">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.084 60.084 0 006.101 2.511C9.357 21.378 10.6 21.75 12 21.75c1.398 0 2.643-.372 3.84-1.025a60.084 60.084 0 006.101-2.511m-16.175 6.456A11.953 11.953 0 0112 21.75c2.94 0 5.674-1.196 7.635-3.155L14.75 14.75a2.25 2.25 0 00-3.182-3.182l-4.25 4.25a2.25 2.25 0 003.182 3.182z"/></svg>
+            </div>
+            <h4>Bonded Labor</h4>
+            <p>Workers trapped in debt or forced labor conditions</p>
+            <div class="badges"><span class="badge">Agriculture</span><span class="badge">Industry</span><span class="badge">Construction</span></div>
+          </div>
+          <div class="icon-card">
+            <div class="icon-svg orange">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21.75a9.75 9.75 0 01-9.25-6.5C3.25 13.9 4.3 12 6.5 12c1.47 0 2.76.7 3.63 1.83.6.76.88 1.57.87 2.42A9.75 9.75 0 0112 21.75z"/></svg>
+            </div>
+            <h4>Child Labor</h4>
+            <p>Employment of children in work harmful to their development</p>
+            <div class="badges"><span class="badge">Agriculture</span><span class="badge">Industry</span><span class="badge">Construction</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="reveal">
+        <h2 style="text-align: center; font-weight: 700;">Platform Features</h2>
+        <p class="muted" style="text-align: center; margin-top: 4px;">Comprehensive tools for labor market education and assessment</p>
+        <div class="grid grid-3" style="margin-top: 24px;">
+          <div class="icon-card">
+            <div class="icon-svg blue"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.002c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zM2.25 12c0 4.887 3.963 8.85 8.85 8.85s8.85-3.963 8.85-8.85S16.887 3.15 12 3.15 3.15 7.113 3.15 12zM12 18.75a6.75 6.75 0 100-13.5 6.75 6.75 0 000 13.5z"/></svg></div>
+            <h4>Interactive Questionnaire</h4>
+            <p>Test your knowledge with comprehensive questions about labor market topics</p>
+          </div>
+          <div class="icon-card">
+            <div class="icon-svg blue"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.002c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zM2.25 12c0 4.887 3.963 8.85 8.85 8.85s8.85-3.963 8.85-8.85S16.887 3.15 12 3.15 3.15 7.113 3.15 12zM12 18.75a6.75 6.75 0 100-13.5 6.75 6.75 0 000 13.5z"/></svg></div>
+            <h4>Government Acts Database</h4>
+            <p>Learn about labor protection laws and government policies</p>
+          </div>
+          <div class="icon-card">
+            <div class="icon-svg blue"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.002c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zM2.25 12c0 4.887 3.963 8.85 8.85 8.85s8.85-3.963 8.85-8.85S16.887 3.15 12 3.15 3.15 7.113 3.15 12zM12 18.75a6.75 6.75 0 100-13.5 6.75 6.75 0 000 13.5z"/></svg></div>
+            <h4>Sector Analysis</h4>
+            <p>Understand labor dynamics across agriculture, industry, and construction</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="quiz" class="reveal">
+        <div class="card quiz-card">
+          <div class="progress" aria-label="progress"><div id="bar"></div></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px">
+            <div class="badge" id="qBadge">Question 1</div>
+            <div class="muted" id="scoreTally">Score: 0</div>
+          </div>
+          <h3 id="qText" style="margin:10px 0 0">Loading…</h3>
+          <div id="qMeta" class="muted" style="font-size:12px; margin-top:4px"></div>
+          <div class="options" id="options"></div>
+          <div id="feedback" class="muted"></div>
+          <div class="controls" style="margin-top:12px">
+            <button class="btn ghost" id="prevBtn">← Previous</button>
+            <div style="display:flex; gap:8px">
+              <button class="btn ghost" id="resetBtn">Reset</button>
+              <button class="btn primary" id="nextBtn">Next →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="learn" class="reveal">
+        <div class="card gradient">
+          <div class="badge">📚 Know the Laws</div>
+          <h2 style="margin:8px 0 4px">Acts for welfare and protection of labour (India)</h2>
+          <p class="muted">Explore key protections. (Always verify current amendments from official gazettes.)</p>
+          <div class="grid grid-3" style="margin-top:12px">
+            <div class="law"><h4>Bonded Labour System (Abolition) Act, 1976</h4><p>Eliminates bonded labour; extinguishes related debts; penalizes enforcement.</p></div>
+            <div class="law"><h4>Child and Adolescent Labour (Prohibition & Regulation) Act, 1986 (amended 2016)</h4><p>Prohibits employment of children below 14 in all occupations; regulates adolescents in hazardous processes.</p></div>
+            <div class="law"><h4>Minimum Wages Act, 1948</h4><p>Empowers governments to fix and revise minimum wages for scheduled employments.</p></div>
+            <div class="law"><h4>Factories Act, 1948</h4><p>Regulates working conditions, safety, health, hours in factories.</p></div>
+            <div class="law"><h4>Building & Other Construction Workers Act, 1996</h4><p>Welfare measures for construction workers; registration and cess for welfare boards.</p></div>
+            <div class="law"><h4>Industrial Disputes Act, 1947</h4><p>Provides mechanisms for resolution of industrial disputes, layoffs, retrenchment, closure.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="results" class="reveal">
+        <div class="card">
+          <div class="badge">📊 Your Results</div>
+          <div class="result-grid" style="margin-top:8px">
+            <div class="card" style="min-height:380px">
+              <canvas id="chart" aria-label="Performance pie chart"></canvas>
+            </div>
+            <div class="card">
+              <h3 style="margin:0">Summary</h3>
+              <p id="summary" class="muted">Complete the quiz to see your results.</p>
+              <div class="callout" id="solution">Answer the quiz to get a tailored learning plan.</div>
+              <div style="display:flex; gap:8px; margin-top:12px">
+                <button class="btn primary" onclick="smoothScroll('#quiz')">Retake Quiz</button>
+                <button class="btn ghost" onclick="smoothScroll('#learn')">Review Laws</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="credit">
+        <div>© <span id="year"></span> Labor Market Analysis</div>
+        <div><strong>Designed by Devang and team on Mac</strong></div>
+      </div>
+    </footer>
+  </div>
+
+  <div id="teamPage">
+    <div class="team-content">
+      <div class="team-header">
+        <h2 class="main-title">Meet Our Amazing Team</h2>
+        <h4 class="subtitle">Made by Devang and team on Mac</h4>
+        <p>A passionate group of developers and designers who came together to create this comprehensive labor market education platform. Each team member brought their unique skills and creativity to make this project a success.</p>
+        <button class="pill close-btn" onclick="showPage('main');">✖ Close</button>
+      </div>
+      <div class="team-grid">
+        <div class="member-card"><div class="icon-placeholder"><img src="https://picsum.photos/seed/devang/200" alt="Devang Shimpi"/></div><h4>Devang Shimpi</h4><div class="role">Project Lead & Developer</div></div>
+        <div class="member-card"><div class="icon-placeholder"><img src="https://picsum.photos/seed/anurag/200" alt="Anurag Lal"/></div><h4>Anurag Lal</h4><div class="role">Data Collector</div></div>
+        <div class="member-card"><div class="icon-placeholder"><img src="https://picsum.photos/seed/atharva1/200" alt="Atharva Sachin Mahajan"/></div><h4>Atharva Sachin Mahajan</h4><div class="role">Report Writer</div></div>
+        <div class="member-card"><div class="icon-placeholder"><img src="https://picsum.photos/seed/bhumika/200" alt="Bhumika Sushil Rangwani"/></div><h4>Bhumika Sushil Rangwani</h4><div class="role">Questionnaire Maker</div></div>
+        <div class="member-card"><div class="icon-placeholder"><img src="https://picsum.photos/seed/dheeran/200" alt="Dheeran Shivaa"/></div><h4>Dheeran Shivaa</h4><div class="role">Data Collector</div></div>
+        <div class="member-card"><div class="icon-placeholder"><img src="https://picsum.photos/seed/haripriya/200" alt="Haripriya Nikhil Chaudhary"/></div><h4>Haripriya Nikhil Chaudhary</h4><div class="role">Analyst</div></div>
+        <div class="member-card"><div class="icon-placeholder"><img src="https://picsum.photos/seed/atharva2/200" alt="Atharva Ashish"/></div><h4>Atharva Ashish</h4><div class="role">Presenter</div></div>
+        <div class="member-card"><div class="icon-placeholder"><img src="https://picsum.photos/seed/harsh/200" alt="Harshwardhan Singh"/></div><h4>Harshwardhan Singh</h4><div class="role">Supporter</div></div>
+      </div>
+
+      <div class="about-project-card">
+        <h3>About Our Project</h3>
+        <p>This Labor Market Knowledge Assessment Platform represents our collective effort to create an educational tool that helps users understand labor market dynamics, protection laws, and various labor categories through interactive questionnaires and comprehensive analytics.</p>
+        <div class="about-stats">
+          <div class="about-stats-item"><h4>8</h4><p>Team Members</p></div>
+          <div class="about-stats-item"><h4>React + <br>TypeScript</h4><p>Technology Stack</p></div>
+          <div class="about-stats-item"><h4>Mac</h4><p>Development Platform</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="userModal" class="modal">
+    <div class="modal-content">
+      <h3 style="margin-top:0">Start Your Assessment</h3>
+      <p class="muted">Please provide your details to begin.</p>
+      
+      <label for="userName">Name:</label>
+      <input type="text" id="userName" required placeholder="Enter Full Name">
+      
+      <label for="userAge">Age:</label>
+      <input type="number" id="userAge" required min="10" max="99" placeholder="Enter Age">
+      
+      <label for="userGender">Gender:</label>
+      <select id="userGender" required>
+        <option value="" disabled selected>Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+        <option value="Prefer Not To Say">Prefer Not To Say</option>
+      </select>
+      
+      <button class="btn primary" onclick="startAssessment()">Begin Quiz →</button>
+    </div>
+  </div>
+  <script>
+    // -------------------------------------------------------------------
+    // 🔥 FIREBASE INITIALIZATION (CORRECTED)
+    // You MUST replace the placeholder config with your actual Firebase config.
+    // -------------------------------------------------------------------
+    const firebaseConfig = {
+      // NOTE: Your provided config is left here, but ensure the projectId and authDomain match your project.
+      apiKey: "AIzaSyDu4cKEKjAhYm_uObTaI44Ha4CTgFigCM8",
+      authDomain: "labourmarketanalysis.firebaseapp.com",
+      projectId: "labourmarketanalysis",
+      storageBucket: "labourmarketanalysis.firebasestorage.app",
+      messagingSenderId: "747656916113",
+      appId: "1:747656916113:web:24352c4a8dec274597a330",
+      measurementId: "G-CCES87C2LK"
+    };
+
+    // 1. Initialize the main app (using the compatibility method)
+    const app = firebase.initializeApp(firebaseConfig);
+    // 2. Initialize the Firestore database service
+    const db = app.firestore();
+    // -------------------------------------------------------------------
+
+    // ===== Smooth scroll
+    function smoothScroll(sel){ const el=document.querySelector(sel); if(el) el.scrollIntoView({behavior:'smooth'}); }
+
+    // ===== Page switcher with fade / scale
+    function showPage(page) {
+      const appContainer = document.getElementById('appContainer');
+      const teamPage = document.getElementById('teamPage');
+      if (page === 'team') {
+        appContainer.style.opacity = '0';
+        appContainer.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+          appContainer.style.display = 'none';
+          teamPage.style.display = 'block';
+          setTimeout(() => teamPage.classList.add('visible'), 10);
+        }, 250);
+      } else {
+        teamPage.classList.remove('visible');
+        setTimeout(() => {
+          teamPage.style.display = 'none';
+          appContainer.style.display = 'block';
+          setTimeout(() => {
+            appContainer.style.opacity = '1';
+            appContainer.style.transform = 'scale(1)';
+          }, 10);
+        }, 250);
+      }
+    }
+
+    // ===== Scroll reveal
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target);} })
+    }, {threshold:.15});
+    document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+
+    // ===== Lightweight parallax on mouse
+    document.addEventListener('mousemove', (e)=>{
+      const x = (e.clientX / window.innerWidth - .5) * 10;
+      const y = (e.clientY / window.innerHeight - .5) * 10;
+      document.querySelectorAll('.icon-card').forEach((c,i)=>{
+        c.style.transform = `translateY(-4px) rotateX(${(-y/6)}deg) rotateY(${x/6}deg)`;
+      });
+    });
+
+    // ===== Particles background
+    (function(){
+      const canvas = document.getElementById('particles');
+      const ctx = canvas.getContext('2d');
+      let W, H, parts;
+      const count = 70;
+      function resize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; parts = Array.from({length:count},()=>({x:Math.random()*W, y:Math.random()*H, r:Math.random()*2+0.5, vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3})) }
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+        ctx.fillStyle = 'rgba(124,58,237,.25)';
+        parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>W) p.vx*=-1; if(p.y<0||p.y>H) p.vy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); });
+        requestAnimationFrame(draw);
+      }
+      addEventListener('resize', resize); resize(); draw();
+    })();
+
+    // ===== Quiz data (10 questions)
+    const questions = [
+      { text: 'A certified electrician installing wiring on a construction site is an example of…', options: ['Unskilled labour','Skilled labour','Bonded labour','Child labour'], correct: 1, sector: 'Construction', type: 'Skilled', explain: 'Electricians require formal training/certification → skilled labour.' },
+      { text: 'A 12-year-old helping in a factory assembly line falls under…', options: ['Child labour','Skilled labour','Unskilled labour','Bonded labour'], correct: 0, sector: 'Industry', type: 'Child', explain: 'Under the Child & Adolescent Labour Act, employing children below 14 is prohibited.' },
+      { text: 'A seasonal farmhand hired for harvesting without special training is…', options: ['Bonded labour','Unskilled labour','Skilled labour','Child labour'], correct: 1, sector: 'Agriculture', type: 'Unskilled', explain: 'General tasks without specialized training → unskilled labour.' },
+      { text: 'A worker forced to repay an ancestral debt by working without wages is…', options: ['Skilled labour','Bonded labour','Unskilled labour','Child labour'], correct: 1, sector: 'Any', type: 'Bonded', explain: 'The Bonded Labour System (Abolition) Act, 1976 outlaws this practice.' },
+      { text: 'A certified welder operating in an automobile plant is…', options: ['Skilled labour','Unskilled labour','Bonded labour','Child labour'], correct: 0, sector: 'Industry', type: 'Skilled', explain: 'Certified welding is a skilled trade.' },
+      { text: 'A minor carrying bricks at a construction site is…', options: ['Unskilled labour','Child labour','Bonded labour','Skilled labour'], correct: 1, sector: 'Construction', type: 'Child', explain: 'Employment of children in hazardous construction is prohibited.' },
+      { text: 'An adult porter loading sacks at a grain market with no special training is…', options: ['Skilled labour','Unskilled labour','Bonded labour','Child labour'], correct: 1, sector: 'Agriculture', type: 'Unskilled', explain: 'Manual tasks without specific training → unskilled labour.' },
+      { text: 'Which Act aims to regulate working conditions, safety, and health in factories?', options: ['Minimum Wages Act, 1948', 'Factories Act, 1948', 'Industrial Disputes Act, 1947', 'Apprentices Act, 1961'], correct: 1, sector: 'Industry', type: 'Legal', explain: 'The Factories Act, 1948 specifically covers working conditions, safety, and health standards for factory workers.' },
+      { text: 'The primary purpose of the Minimum Wages Act, 1948 is to...', options: ['Abolish bonded labour', 'Provide social security benefits', 'Fix and revise minimum wages', 'Regulate industrial disputes'], correct: 2, sector: 'Any', type: 'Legal', explain: 'The Minimum Wages Act, 1948 empowers the government to set a minimum wage for workers in certain scheduled employments.' },
+      { text: 'Which of these is a characteristic of bonded labour?', options: ['Freedom to leave the workplace anytime', 'Work performed to repay a debt', 'Receiving fair market wages for services', 'Work performed by highly skilled professionals'], correct: 1, sector: 'Any', type: 'Bonded', explain: 'Bonded labour is defined by the element of debt bondage, where a person is forced to work to pay off a loan or debt.' }
+    ];
+
+    // ===== Quiz state
+    let idx = 0; // current question index
+    const answers = Array(questions.length).fill(null); // selected index
+    const locked = Array(questions.length).fill(false); // lock after first selection
+    let participantInfo = {}; // Global variable to store Name, Age, Gender
+
+    const bar = document.getElementById('bar');
+    const qBadge = document.getElementById('qBadge');
+    const qText = document.getElementById('qText');
+    const qMeta = document.getElementById('qMeta');
+    const optionsWrap = document.getElementById('options');
+    const feedback = document.getElementById('feedback');
+    const scoreTally = document.getElementById('scoreTally');
+
+    function render(){
+      const q = questions[idx];
+      qBadge.textContent = `Question ${idx+1} of ${questions.length}`;
+      qText.textContent = q.text;
+      qMeta.textContent = `${q.type} • ${q.sector}`;
+      feedback.textContent = '';
+
+      const pct = Math.round((idx)/questions.length*100);
+      bar.style.width = pct + '%';
+
+      optionsWrap.innerHTML = '';
+      q.options.forEach((opt, i)=>{
+        const div = document.createElement('label');
+        div.className = 'opt';
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'q'+idx;
+        // Restore previous selection if exists
+        input.checked = answers[idx] === i;
+        input.disabled = locked[idx];
+        input.addEventListener('change', ()=> select(i));
+        const span = document.createElement('span');
+        span.textContent = opt;
+        div.appendChild(input); div.appendChild(span);
+        optionsWrap.appendChild(div);
+      });
+
+      if(answers[idx] !== null){ markFeedback(answers[idx]); }
+
+      updateScore();
+      document.getElementById('prevBtn').disabled = idx===0;
+      document.getElementById('nextBtn').textContent = idx===questions.length-1? 'Finish →' : 'Next →';
+    }
+
+    function select(choice){
+      if(locked[idx]) return;
+      answers[idx] = choice;
+      locked[idx] = true;
+      markFeedback(choice);
+      document.querySelectorAll(`input[name="q${idx}"]`).forEach(r=> r.disabled = true);
+    }
+
+    function markFeedback(choice){
+      const q = questions[idx];
+      const correct = q.correct;
+      const nodes = [...optionsWrap.children];
+      nodes.forEach((node, i)=>{
+        node.classList.remove('correct','wrong');
+        if(i===correct) node.classList.add('correct');
+        if(i===choice && choice!==correct) node.classList.add('wrong');
+        // Keep the selected radio button checked visually
+        const input = node.querySelector('input');
+        if(input && i===choice) input.checked = true;
+      });
+      feedback.innerHTML = (choice===correct) ? '✅ Correct! '+ q.explain : '❌ Not quite. ' + q.explain;
+      updateScore();
+    }
+
+    function updateScore(){
+      const correctCount = answers.reduce((a,v,i)=> a + (v===questions[i].correct ? 1:0), 0);
+      scoreTally.textContent = `Score: ${correctCount}/${questions.length}`;
+    }
+
+    document.getElementById('prevBtn').addEventListener('click', ()=>{ if(idx>0){ idx--; render(); }});
+    document.getElementById('nextBtn').addEventListener('click', ()=>{
+      if(idx < questions.length-1){ idx++; render(); }
+      else { 
+        if(answers.includes(null)){
+            alert("Please attempt all questions before finishing the quiz.");
+            return;
+        }
+        window.location.hash = '#results'; drawResults(); confetti(); 
+      }
+    });
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      for(let i=0;i<answers.length;i++){ answers[i]=null; locked[i]=false; }
+      idx=0; render(); if(chart) { chart.destroy(); chart = null; }
+      document.getElementById('summary').textContent = 'Complete the quiz to see your results.';
+      document.getElementById('solution').textContent = 'Answer the quiz to get a tailored learning plan.';
+    });
+
+    // ===== Results & Chart
+    let chart = null;
+    function drawResults(){
+      const total = questions.length;
+      const correct = answers.reduce((a,v,i)=> a + (v===questions[i].correct ? 1:0), 0);
+      const attempted = answers.filter(v=> v!==null).length;
+      const wrong = attempted - correct;
+      const unattempted = total - attempted;
+      const pct = Math.round(correct/total*100);
+
+      // --- Compile detailed results ---
+      const detailedResults = questions.map((q, i) => ({
+          question: q.text,
+          sector: q.sector,
+          type: q.type,
+          userAnswerIndex: answers[i],
+          correctAnswerIndex: q.correct,
+          isCorrect: answers[i] === q.correct,
+          userAnswerText: answers[i] !== null ? q.options[answers[i]] : 'N/A',
+          correctAnswerText: q.options[q.correct]
+      }));
+
+      const resultData = {
+          score: {
+              totalQuestions: total,
+              correctCount: correct,
+              incorrectCount: wrong,
+              percentage: pct
+          },
+          answers: detailedResults
+      };
+
+      // --- Call the function to save data ---
+      saveResultsToFirebase(resultData);
+
+      document.getElementById('summary').innerHTML = `You answered <strong>${correct}</strong> correctly and <strong>${wrong}</strong> incorrectly out of <strong>${total}</strong> questions. (${pct}% correct)`;
+
+      const sol = document.getElementById('solution');
+      if(pct>=80){ sol.innerHTML = '🎯 <strong>Great job!</strong> You have strong awareness. Next steps: mentor peers, explore advanced topics like <em>occupational safety codes</em>, and review recent amendments to labour codes.'; }
+      else if(pct>=50){ sol.innerHTML = '🛠️ <strong>Getting there.</strong> Revisit the differences between skilled vs unskilled labour and the scope of the Bonded Labour & Child Labour Acts. Try the quiz again after reviewing the Learn section.'; }
+      else { sol.innerHTML = '🌱 <strong>Foundation first.</strong> Start with definitions of labour types and read the summaries of the key protection Acts above. Consider local case studies in agriculture, industry, and construction.'; }
+
+      const ctx = document.getElementById('chart');
+      if(chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type:'pie',
+        data:{ labels:['Correct','Wrong','Unattempted'], datasets:[{ data:[correct, wrong, unattempted], backgroundColor: ['#10b981', '#ef4444', '#94a3b8'] }] },
+        options:{ responsive:true, plugins:{ legend:{position:'bottom'}, tooltip:{callbacks:{ label:(ctx)=> `${ctx.label}: ${ctx.raw} (${Math.round(ctx.raw/total*100)}%)` } } } }
+      });
+    }
+
+    // -------------------------------------------------------------------
+    // 🔥 MODIFIED: FIREBASE SAVE FUNCTION (Uses Name as Document ID)
+    // -------------------------------------------------------------------
+    async function saveResultsToFirebase(data) {
+        const collectionName = 'quiz_submissions';
+        
+        // 1. Check if participant name is available (meaning quiz was started)
+        if (!participantInfo || !participantInfo.name) {
+            console.error("Participant information is missing. Cannot save results.");
+            return;
+        }
+
+        if (!db) {
+            console.error("Firestore service is not initialized. Cannot save results.");
+            return;
+        }
+
+        // 2. Sanitize the name to be safe for a Firestore Document ID
+        // Replaces spaces with underscores and removes special characters
+        const docId = participantInfo.name.trim().replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase();
+
+        // 3. Combine quiz results with participant details
+        const dataToSave = {
+            ...data, // Contains score and answers
+            ...participantInfo, // Contains name, age, gender
+            submissionTime: new Date().toISOString()
+        };
+        
+        const docRef = db.collection(collectionName).doc(docId); // Use .doc() to specify the ID
+
+        try {
+            // 4. Use .set() to save the data. This will OVERWRITE existing data if the name is the same, 
+            // ensuring one record per unique name.
+            await docRef.set(dataToSave);
+            console.log(`Quiz results successfully saved for participant: ${participantInfo.name}. Document ID: ${docId}`);
+        } catch (error) {
+            console.error("Error writing document to Firestore: ", error);
+            alert("🚨 Error: Failed to save quiz results. Check the console for details.");
+        }
+    }
+    // -------------------------------------------------------------------
+
+    // ===== Confetti burst on finish (simple)
+    function confetti(){
+      const end = Date.now() + 800;
+      const canvas = document.createElement('canvas');
+      canvas.style.position='fixed'; canvas.style.inset='0'; canvas.style.pointerEvents='none'; canvas.style.zIndex='3000';
+      const c = canvas.getContext('2d'); document.body.appendChild(canvas);
+      function resize(){ canvas.width=innerWidth; canvas.height=innerHeight } resize(); addEventListener('resize', resize);
+      const pieces = Array.from({length:180},()=>({ x:Math.random()*canvas.width, y:-20-Math.random()*60, r:4+Math.random()*4, vx:(Math.random()-.5)*2, vy:2+Math.random()*3, hue: Math.floor(Math.random()*360)}));
+      (function tick(){ c.clearRect(0,0,canvas.width,canvas.height); pieces.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.02; c.fillStyle=`hsl(${p.hue} 90% 60%)`; c.fillRect(p.x,p.y,p.r,p.r);}); if(Date.now()<end){ requestAnimationFrame(tick);} else { document.body.removeChild(canvas);} })();
+    }
+
+    // -------------------------------------------------------------------
+    // 🔥 NEW: START ASSESSMENT LOGIC
+    // -------------------------------------------------------------------
+
+    function startAssessment() {
+      const name = document.getElementById('userName').value.trim();
+      const age = document.getElementById('userAge').value;
+      const gender = document.getElementById('userGender').value;
+
+      if (!name || !age || !gender || age < 10 || age > 99) {
+        alert("Please fill in all required fields with valid data.");
+        return;
+      }
+      
+      // Store the participant info globally
+      participantInfo = {
+        name: name,
+        age: parseInt(age),
+        gender: gender
+      };
+
+      // Close modal and scroll to the quiz
+      document.getElementById('userModal').style.display = 'none';
+      smoothScroll('#quiz');
+    }
+
+
+    // -------------------------------------------------------------------
+    // 🔥 MODIFIED: SCROLL TO QUIZ (Shows Modal instead of scrolling)
+    // -------------------------------------------------------------------
+    function scrollToQuiz() {
+      document.getElementById('userModal').style.display = 'block';
+    }
+
+
+    // ===== Boot
+    document.getElementById('year').textContent = new Date().getFullYear();
+    render();
+  </script>
+</body>
+</html>
